@@ -1,0 +1,53 @@
+# Shared gitleaks config. Drop a copy at each repo root as `.gitleaks.toml`
+# if you need to extend the central rules locally.
+#
+# 偽陰性回避方針: 人が直接編集しないファイル(自動生成・第三者コード)のみ allowlist に入れる。
+# test fixture や .env.example は人が書くので外す (うっかり実値が混入しうる)。
+# Keep paths in sync with configs/noseyparker-ignore.txt.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Yarn 管理 (releases / plugins / sdks)"
+paths = [
+  '''(^|.+/)\.yarn/releases/.+''',
+  '''(^|.+/)\.yarn/plugins/.+''',
+  '''(^|.+/)\.yarn/sdks/.+''',
+]
+
+[[allowlists]]
+description = "Lock ファイル (パッケージマネージャ自動生成)"
+paths = [
+  '''(^|.+/)yarn\.lock$''',
+  '''(^|.+/)package-lock\.json$''',
+  '''(^|.+/)pnpm-lock\.yaml$''',
+  '''(^|.+/)Cargo\.lock$''',
+  '''(^|.+/)Gemfile\.lock$''',
+  '''(^|.+/)poetry\.lock$''',
+  '''(^|.+/)composer\.lock$''',
+  '''(^|.+/)go\.sum$''',
+]
+
+[[allowlists]]
+description = "node_modules (第三者コード、人が直接編集しない)"
+paths = [
+  '''(^|.+/)node_modules/.+''',
+]
+
+[[allowlists]]
+description = "Minified / source map (人が読まない自動生成)"
+paths = [
+  '''.+\.min\.js$''',
+  '''.+\.min\.css$''',
+  '''.+\.js\.map$''',
+  '''.+\.css\.map$''',
+]
+
+# Add custom rules below if hacobell uses internal token formats not covered by defaults.
+# Example skeleton:
+# [[rules]]
+# id = "hacobell-internal-api-token"
+# description = "Hacobell internal API token"
+# regex = '''hcb_[a-zA-Z0-9]{32}'''
+# tags = ["hacobell", "secret"]
